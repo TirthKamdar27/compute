@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Bust A Ghost!</title>
+  <link href='https://fonts.googleapis.com/css?family=Amatic+SC:400,700' rel='stylesheet' type='text/css'>
+  
+</head>
+<style>
+  html 
+  {
+  box-sizing: border-box;
+  font-size: 10px;
+  }
+body
+    {
+        background-image: url(watercolor-halloween-background_52683-43697.avif);
+        background-repeat: no-repeat;
+        background-attachment: fixed;
+        background-size:100% 100%;
+        padding: 0;
+  margin: 0;
+  font-family: 'Amatic SC', cursive;
+
+    }
+
+*, *:before, *:after {
+  box-sizing: inherit;
+}
+
+h1 {
+  text-align: center;
+  font-size: 8rem;
+  line-height: 1;
+  margin-bottom: 0;
+  
+}
+
+.score {
+  background: rgba(0, 0, 0, 0.355);
+  padding: 0 3rem;
+  line-height: 1;
+  border-radius: 1rem;
+}
+
+.game {
+  width: 600px;
+  height: 400px;
+  display: flex;
+  flex-wrap: wrap;
+  margin: 0 auto;
+  margin-top:70px;
+}
+
+.graveyard {
+  flex: 1 0 33.33%;
+  overflow: hidden;
+  position: relative;
+}
+
+.graveyard:after {
+  display: block;
+  background: url(8ixr7qLrT.png) bottom center no-repeat;
+  background-size:contain;
+  content: '';
+  width: 100%;
+  height:120px;
+  position: absolute;
+  z-index: 2;
+  bottom: -30px;
+}
+
+.ghost {
+  background: url('pngimg.com - ghost_PNG34.png') bottom center no-repeat;
+  background-size: 80%;
+  position: absolute;
+  top: 100%;
+  width: 100%;
+  height: 100%;
+  transition:all 0.4s;
+}
+
+.graveyard.up .ghost {
+  top: 0;
+}
+.button1
+{
+  font-family: 'Amatic SC', cursive;
+  -ms-transform: translate(-50%, -50%);
+  transform: translate(1111%, 150%);
+  padding:1%;
+  font-size:20px;
+  color:black;
+}
+.button1:hover
+{
+  background-color: black;
+  color:whitesmoke;
+  transition-duration: 0.1s;
+  cursor:pointer;
+}
+</style>
+<body>
+
+  <h1 style="color:whitesmoke">Bust A Ghost!<span class="score">0</span></h1>
+  <button onClick="startGame()" class="button1"><b>Start!</b></button>
+
+  <div class="game">
+    <div class="graveyard graveyard1">
+      <div class="ghost"></div>
+    </div>
+    <div class="graveyard graveyard2">
+      <div class="ghost"></div>
+    </div>
+    <div class="graveyard graveyard3">
+      <div class="ghost"></div>
+    </div>
+    <div class="graveyard graveyard4">
+      <div class="ghost"></div>
+    </div>
+    <div class="graveyard graveyard5">
+      <div class="ghost"></div>
+    </div>
+    <div class="graveyard graveyard6">
+      <div class="ghost"></div>
+    </div>
+  </div>
+
+<script>
+  const graveyards = document.querySelectorAll('.graveyard');
+  const scoreBoard = document.querySelector('.score');
+  const ghosts = document.querySelectorAll('.ghost');
+  let lastgraveyard;
+  let timeUp = false;
+  let score = 0;
+
+  function randomTime(min, max) {
+    return Math.round(Math.random() * (max - min) + min);
+  }
+
+  function randomHole(graveyards) {
+    const idx = Math.floor(Math.random() * graveyards.length);
+    const graveyard = graveyards[idx];
+    if (graveyard === lastgraveyard) {
+      console.log('Ah nah thats the same one bud');
+      return randomHole(graveyards);
+    }
+    lastgraveyard = graveyard;
+    return graveyard;
+  }
+
+  function peep() {
+    const time = randomTime(200, 1000);
+    const graveyard = randomHole(graveyards);
+    graveyard.classList.add('up');
+    setTimeout(() => {
+      graveyard.classList.remove('up');
+      if (!timeUp) peep();
+    }, time);
+  }
+
+  function startGame() {
+    scoreBoard.textContent = 0;
+    timeUp = false;
+    score = 0;
+    peep();
+    setTimeout(() => timeUp = true, 10000)
+  }
+
+  function bonk(e) {
+    if(!e.isTrusted) return; 
+    score++;
+    this.parentNode.classList.remove('up');
+    scoreBoard.textContent = score;
+  }
+
+  ghosts.forEach(ghost => ghost.addEventListener('click', bonk));
+
+</script>
+</body>
+</html>
